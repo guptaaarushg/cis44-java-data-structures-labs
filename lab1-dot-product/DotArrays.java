@@ -2,6 +2,7 @@ import java.util.Random;
 
 public class DotArrays {
     public static void main(String[] args) {
+        
         int n = 5;
         int[] a = new int[n];
         int[] b = new int[n];
@@ -9,18 +10,18 @@ public class DotArrays {
 
         Random r = new Random();
 
-        // fill arrays
+        
         for (int i = 0; i < n; i++) {
-            a[i] = r.nextInt(10); // random number 0–9
+            a[i] = r.nextInt(10); 
             b[i] = r.nextInt(10);
         }
 
-        // compute c
+        
         for (int i = 0; i < n; i++) {
             c[i] = a[i] * b[i];
         }
 
-        // print arrays
+        
         System.out.print("a: ");
         for (int i = 0; i < n; i++) {
             System.out.print(a[i] + " ");
@@ -40,3 +41,4 @@ public class DotArrays {
         System.out.println();
     }
 }
+
