@@ -1,25 +1,29 @@
 public class SearchComparison {
 
     /**
-     * Lab 1a: Iterative Linear Search
+     * Lab 1a: Iterative Linear Search (with comparison counter)
      * Searches for 'key' in the array 'arr' one element at a time.
      * @param arr The array to search (can be unsorted).
      * @param key The value to find.
      * @return The index of the key if found, otherwise -1.
      */
     public static int linearSearch(int[] arr, int key) {
-        // Loop through the array from index 0 to the end.
+        int comparisonCounter = 0;
+
         for (int i = 0; i < arr.length; i++) {
-            // If the element at the current index matches the key, return the index.
+            comparisonCounter++; // one comparison: arr[i] == key
             if (arr[i] == key) {
+                System.out.println("Linear comparisons: " + comparisonCounter);
                 return i;
             }
         }
-        return -1; // Return -1 if the loop finishes without finding the key.
+
+        System.out.println("Linear comparisons: " + comparisonCounter);
+        return -1;
     }
 
     /**
-     * Lab 1b: Iterative Binary Search
+     * Lab 1b: Iterative Binary Search (with comparison counter)
      * Searches for 'key' in a sorted array 'arr' using the divide-and-conquer method.
      * @param arr The array to search (MUST be sorted).
      * @param key The value to find.
@@ -28,26 +32,24 @@ public class SearchComparison {
     public static int binarySearch(int[] arr, int key) {
         int low = 0;
         int high = arr.length - 1;
+        int comparisonCounter = 0;
 
-        // While low is less than or equal to high:
         while (low <= high) {
-            // Calculate the middle index
             int mid = (low + high) / 2;
+            comparisonCounter++; // one comparison: arr[mid] == key
 
-            // If arr[mid] matches the key, return mid.
             if (arr[mid] == key) {
+                System.out.println("Binary comparisons: " + comparisonCounter);
                 return mid;
-            }
-            // If the key is less than arr[mid], update 'high'.
-            else if (key < arr[mid]) {
+            } else if (key < arr[mid]) {
                 high = mid - 1;
-            }
-            // If the key is greater than arr[mid], update 'low'.
-            else {
+            } else {
                 low = mid + 1;
             }
         }
-        return -1; // Return -1 if not found.
+
+        System.out.println("Binary comparisons: " + comparisonCounter);
+        return -1;
     }
 
     public static void main(String[] args) {
@@ -64,5 +66,8 @@ public class SearchComparison {
         System.out.println("Find 9: Index " + binarySearch(sortedData, 9));   // Expected: 3
         System.out.println("Find 3: Index " + binarySearch(sortedData, 3));   // Expected: -1
         System.out.println("Find 30: Index " + binarySearch(sortedData, 30)); // Expected: 7
+
+        System.out.println("\nLinear Search (Sorted, find 30 - worst case):");
+        System.out.println("Find 30: Index " + linearSearch(sortedData, 30)); // Expected: 7
     }
 }
