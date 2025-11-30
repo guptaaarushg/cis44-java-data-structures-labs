@@ -1,1 +1,4 @@
+The decision tree structure is a very efficient and good way to classify loan applicants based on their individual attributes. Each classification, which is a traversal to a leaf node from a root node, allows for the making of comparisons along the way. For a balanced tree (with n nodes). The height of the tree is log 2(n). So, the time complexity for a single applicant on this balanced tree is O(log n). But, in the worst-case scenario when the tree is highly unbalanced, the height approaches n, making the time complexity of the worst case scenario O(n). Decision trees overall allow for the creation of a structured approach, and allows for fast lookups and decision making as the number of attributes and applicants increases.  
 
+
+<img width="815" height="520" alt="Screenshot 2025-11-30 012640" src="https://github.com/user-attachments/assets/b09439be-dc47-438c-b138-36ebdcd8dff6" />
