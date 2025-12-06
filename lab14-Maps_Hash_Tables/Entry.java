@@ -1,13 +1,5 @@
 import java.util.ArrayList;
-
-class Entry<K, V> {
-    private final K key;
-    private V value;
-    public Entry(K key, V value) { this.key = key; this.value = value; }
-    public K getKey() { return key; }
-    public V getValue() { return value; }
-    public V setValue(V value) { V old = this.value; this.value = value; return old; }
-}
+import java.util.LinkedList;
 
 interface MapADT<K, V> {
     V get(K key);
@@ -17,50 +9,106 @@ interface MapADT<K, V> {
     boolean isEmpty();
 }
 
-class UnsortedListMap<K, V> implements MapADT<K, V> {
-    private ArrayList<Entry<K, V>> list = new ArrayList<>();
-    private int findEntryIndex(K key) {
-        for (int i = 0; i < list.size(); i++)
-            if (list.get(i).getKey().equals(key)) return i;
-        return -1;
+class Entry<K, V> {
+    private K key;
+    private V value;
+
+    public Entry(K key, V value) {
+        this.key = key;
+        this.value = value;
     }
 
-    public int size() { return list.size(); }
-    public boolean isEmpty() { return list.isEmpty(); }
+    public K getKey() { return key; }
+    public V getValue() { return value; }
+    public void setValue(V value) { this.value = value; }
+
+    public String toString() {
+        return key + "=" + value;
+    }
+}
+
+class SeparateChainingMap<K, V> implements MapADT<K, V> {
+    private ArrayList<LinkedList<Entry<K, V>>> table;
+    private int size = 0;
+    private final int N = 11;
+
+    public SeparateChainingMap() {
+        table = new ArrayList<>(N);
+        for (int i = 0; i < N; i++) {
+            table.add(new LinkedList<>());
+        }
+    }
+
+    private int hash(K key) {
+        return Math.abs(key.hashCode() % N);
+    }
+
+    public int size() { return size; }
+    public boolean isEmpty() { return size == 0; }
 
     public V get(K key) {
-        int i = findEntryIndex(key);
-        return (i != -1) ? list.get(i).getValue() : null;
-    }
-
-    public V remove(K key) {
-        int i = findEntryIndex(key);
-        if (i != -1) {
-            V old = list.get(i).getValue();
-            list.remove(i);
-            return old;
+        int h = hash(key);
+        LinkedList<Entry<K, V>> bucket = table.get(h);
+        for (Entry<K, V> entry : bucket) {
+            if (entry.getKey().equals(key)) return entry.getValue();
         }
         return null;
     }
 
     public V put(K key, V value) {
-        int i = findEntryIndex(key);
-        if (i != -1) return list.get(i).setValue(value);
-        list.add(new Entry<>(key, value));
+        int h = hash(key);
+        LinkedList<Entry<K, V>> bucket = table.get(h);
+        for (Entry<K, V> entry : bucket) {
+            if (entry.getKey().equals(key)) {
+                V oldValue = entry.getValue();
+                entry.setValue(value);
+                return oldValue;
+            }
+        }
+        bucket.addFirst(new Entry<>(key, value));
+        size++;
         return null;
+    }
+
+    public V remove(K key) {
+        int h = hash(key);
+        LinkedList<Entry<K, V>> bucket = table.get(h);
+        for (Entry<K, V> entry : bucket) {
+            if (entry.getKey().equals(key)) {
+                bucket.remove(entry);
+                size--;
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[\n");
+        for (int i = 0; i < N; i++) {
+            sb.append(i).append(": ").append(table.get(i)).append("\n");
+        }
+        return sb.append("]").toString();
     }
 }
 
-class Flow {
+class Testing {
     public static void main(String[] args) {
-        UnsortedListMap<Integer, String> map = new UnsortedListMap<>();
-
-        System.out.println(map.put(5, "A"));
-        System.out.println(map.put(7, "B"));
-        System.out.println(map.put(2, "C"));
-        System.out.println(map.put(2, "E"));
-        System.out.println(map.get(7));
-        System.out.println(map.remove(5));
+        SeparateChainingMap<String, Integer> map = new SeparateChainingMap<>();
+        map.put("A", 10);
+        map.put("B", 20);
+        map.put("C", 30);
+        map.put("Z", 100);
+        System.out.println(map);
+        System.out.println("get(A): " + map.get("A"));
+        System.out.println("get(Z): " + map.get("Z"));
+        System.out.println("get(X): " + map.get("X"));
+        map.put("A", 999);
+        System.out.println("get(A) after update: " + map.get("A"));
+        System.out.println("remove(B): " + map.remove("B"));
+        System.out.println("get(B): " + map.get("B"));
+        System.out.println("\nFinal map:\n" + map);
+        System.out.println("Size = " + map.size());
     }
 }
 
